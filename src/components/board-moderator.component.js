@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-
-import UserService from "../services/user.service";
+import ModPanelTab from "./mod/mod-panel_tabs";
 
 export default class BoardModerator extends Component {
   constructor(props) {
@@ -11,33 +10,15 @@ export default class BoardModerator extends Component {
     };
   }
 
-  componentDidMount() {
-    UserService.getModeratorBoard().then(
-      response => {
-        this.setState({
-          content: response.data
-        });
-      },
-      error => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
-        });
-      }
-    );
-  }
-
   render() {
     return (
       <div className="container">
         <header className="jumbotron">
-          <h3>{this.state.content}</h3>
+          <h2>Panel Moderatora</h2>
         </header>
+        <ModPanelTab />
       </div>
+      
     );
   }
 }

@@ -9,7 +9,7 @@ const required = value => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        To pole jest wymagane!
       </div>
     );
   }
@@ -59,16 +59,9 @@ export default class Login extends Component {
           window.location.reload();
         },
         error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
           this.setState({
             loading: false,
-            message: resMessage
+            message: 'Niepoprawne dane logowania'
           });
         }
       );
@@ -83,6 +76,8 @@ export default class Login extends Component {
     return (
       <div className="col-md-12">
         <div className="card card-container">
+
+
           <Form
             onSubmit={this.handleLogin}
             ref={c => {
@@ -121,7 +116,7 @@ export default class Login extends Component {
                 {this.state.loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}
-                <span>Login</span>
+                <span>Zaloguj</span>
               </button>
             </div>
 

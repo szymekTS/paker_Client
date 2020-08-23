@@ -56,11 +56,6 @@ class App extends Component {
               PakerApp
             </Link>
             <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/home"} className="nav-link">
-                  Strona główna
-                </Link>
-              </li>
               {showPakerBoard && (
                 <li className="nav-item">
                   <Link to={"/paker"} className="nav-link">

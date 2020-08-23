@@ -4,8 +4,6 @@ import AuthService from "../services/auth.service";
 import ProfileService from "../services/profile-service";
 import PakerService from "../services/paker-service";
 import CityService from "../services/city-service";
-import Basic from "./datatable-order.component";
-import ModalPage from "./modal";
 
 export default class BoardPaker extends Component {
   constructor(props) {
@@ -79,6 +77,8 @@ export default class BoardPaker extends Component {
     );
   }
 
+
+
   render() {
     const { userData, orderList, localization } = this.state;
     const list =
@@ -89,7 +89,8 @@ export default class BoardPaker extends Component {
       ) : (
         <h2>Lista zamówień w {localization.name}</h2>
       );
-      const rows = orderList.map((order) => {
+      
+        const rows = orderList.map((order) => {
         return {
           id: order.id,
           car: order.car,
@@ -100,13 +101,9 @@ export default class BoardPaker extends Component {
           origin: order.origin,
           destiny: order.destiny,
           route: order.route,
-          edit: (
-            <ModalPage
-              props={order.id, order.lastStatus, this.state.currentUser.id}
-            />
-          ),
         };
       });
+      
 
     return (
       <div className="container">

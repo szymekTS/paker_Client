@@ -16,7 +16,8 @@ export default class Profile extends Component {
       localization: {},
       oldPassword: "",
       newPassword: "",
-      open: false,
+      openPass: false,
+      openLoc: false,
     };
   }
   handleSubmit = (event) => {
@@ -69,7 +70,7 @@ export default class Profile extends Component {
   };
 
   render() {
-    const { userData, localization, open } = this.state;
+    const { userData, localization, openPass, openLoc} = this.state;
     return (
       <div className="container">
         <header className="jumbotron">
@@ -95,17 +96,17 @@ export default class Profile extends Component {
           onClick={() => {
             this.setState((prevState) => {
               return {
-                open: !prevState.open,
+                openPass: !prevState.openPass,
               };
             });
           }}
           aria-controls="change-password-form"
-          aria-expanded={open}
+          aria-expanded={openPass}
         >
           Zmień hasło
         </Button>
         <br/>
-        <Collapse in={open}>
+        <Collapse in={openPass}>
           <div id="change-password-form">
             <h4>Zmiana hasła</h4>
             {this.state.message.message}
@@ -133,6 +134,54 @@ export default class Profile extends Component {
 
               <button className="btn btn-secondary btn-lg">Zapisz</button>
             </form>
+            
+          </div>
+        </Collapse>
+        
+        <Button
+          onClick={() => {
+            this.setState((prevState) => {
+              return {
+                openLoc: !prevState.openLoc,
+              };
+            });
+          }}
+          aria-controls="change-localization-form"
+          aria-expanded={openLoc}
+          style={{marginTop: 30}}
+        >
+          Zmień lokalizacje
+        </Button>
+        <br/>
+        <Collapse in={openLoc}>
+          <div id="change-localization-form">
+            <h4>Zmiana lokalizacji</h4>
+            {this.state.message.message}
+            <form onSubmit={this.handleSubmit}>
+              <div className="form-group">
+                <label>Stare hasło:</label>
+                <input
+                  onChange={this.OnChangeHandler}
+                  name="oldPassword"
+                  type="password"
+                  className="form-control"
+                  value={this.state.oldPassword}
+                />
+              </div>
+              <div className="form-group">
+                <label>Nowe hasło:</label>
+                <input
+                  onChange={this.OnChangeHandler}
+                  name="newPassword"
+                  type="password"
+                  className="form-control"
+                  value={this.state.newPassword}
+                />
+              </div>
+
+              <button className="btn btn-secondary btn-lg">Zapisz</button>
+            </form>
+            
           </div>
         </Collapse>
       </div>

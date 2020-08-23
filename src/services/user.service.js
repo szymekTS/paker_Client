@@ -1,23 +1,95 @@
-import axios from 'axios';
-import authHeader from './auth-header';
+import axios from "axios";
+import authHeader from "./auth-header";
 
-const API_URL = 'http://localhost:8900/api/test/';
+const API_URL = "http://localhost:8900/api/user/";
 
 class UserService {
-  getPublicContent() {
-    return axios.get(API_URL + 'all');
+  constructor() {
+    this.state = {
+      option: { headers: authHeader() },
+    };
   }
 
-  getUserBoard() {
-    return axios.get(API_URL + 'user', { headers: authHeader() });
+  findById(id){
+    return axios.get(API_URL + "find", {
+      headers: authHeader(),
+      params: {
+        id: id,
+      },
+    });
   }
 
-  getModeratorBoard() {
-    return axios.get(API_URL + 'mod', { headers: authHeader() });
+  getAllUsers() {
+    return axios.get(API_URL + "find_all", this.state.option);
   }
 
-  getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
+  updateUser(username, name, surname, number, email, roles, localization) {
+    console.log(roles)
+    return axios.post(
+      API_URL + "update",
+      {
+        userName: username,
+        name: name,
+        surname: surname,
+        number: number,
+        email: email,
+        roles:roles,
+        localization: localization
+      },
+      this.state.option
+    );
+  }
+
+  createUser(username, name, surname, number, email, password, roles, localization) {
+    console.log(roles)
+    return axios.post(
+      API_URL + "new",
+      {
+        userName: username,
+        name: name,
+        surname: surname,
+        number: number,
+        email: email,
+        password: password,
+        roles:roles,
+        localization: localization
+      },
+      this.state.option
+    );
+  }
+
+  changeLocation(id, locationId) {
+    return axios.post(
+      API_URL + "loc",
+      {
+        id: id,
+        newLocalization: locationId,
+      },
+      this.state.option 
+    );
+  }
+
+  deleteUser(id) {
+    console.log(id)
+    return axios.delete(API_URL + "del", {
+      headers: authHeader(),
+      params: {
+        id:id
+      }
+    }
+    );
+  }
+
+  changePassword(id, password, oldpassword) {
+    return axios.post(
+      API_URL + "pass/",
+      {
+        id: id,
+        oldPassword: oldpassword,
+        password: password,
+      },
+      this.state.option
+    );
   }
 }
 
