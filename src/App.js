@@ -6,12 +6,12 @@ import "./App.css";
 import AuthService from "./services/auth.service";
 
 import Login from "./components/login.component";
-import Register from "./components/register.component";
 import Home from "./components/home.component";
-import Profile from "./components/profile.component";
-import BoardUser from "./components/board-user.component";
+import Profile from "./components/board-profile.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
+import BoardDriver from "./components/board-driver.component";
+import BoardPaker from "./components/board-paker.component";
 
 class App extends Component {
   constructor(props) {
@@ -21,6 +21,8 @@ class App extends Component {
     this.state = {
       showModeratorBoard: false,
       showAdminBoard: false,
+      showDriverBoard: false,
+      showPakerBoard: false,
       currentUser: undefined
     };
   }
@@ -32,9 +34,11 @@ class App extends Component {
       this.setState({
         currentUser: user,
         showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-        showAdminBoard: user.roles.includes("ROLE_ADMIN")
-      });
-    }
+        showAdminBoard: user.roles.includes("ROLE_ADMIN"),
+        showDriverBoard: user.roles.includes("ROLE_DRIVER"),
+        showPakerBoard: user.roles.includes("ROLE_PAKER")
+    })
+  }
   }
 
   logOut() {
@@ -42,26 +46,39 @@ class App extends Component {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    const { currentUser, showModeratorBoard, showAdminBoard,showDriverBoard,showPakerBoard} = this.state;
 
     return (
       <Router>
         <div>
           <nav className="navbar navbar-expand navbar-dark bg-dark">
             <Link to={"/"} className="navbar-brand">
-              Szymański
+              PakerApp
             </Link>
             <div className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link to={"/home"} className="nav-link">
-                  Home
+                  Strona główna
                 </Link>
               </li>
-
+              {showPakerBoard && (
+                <li className="nav-item">
+                  <Link to={"/paker"} className="nav-link">
+                    Panel pakowacza
+                  </Link>
+                </li>
+              )}
+              {showDriverBoard && (
+                <li className="nav-item">
+                  <Link to={"/driver"} className="nav-link">
+                    Panel kierowcy
+                  </Link>
+                </li>
+              )}
               {showModeratorBoard && (
                 <li className="nav-item">
                   <Link to={"/mod"} className="nav-link">
-                    Moderator Board
+                    Panel moderatora
                   </Link>
                 </li>
               )}
@@ -69,15 +86,7 @@ class App extends Component {
               {showAdminBoard && (
                 <li className="nav-item">
                   <Link to={"/admin"} className="nav-link">
-                    Admin Board
-                  </Link>
-                </li>
-              )}
-
-              {currentUser && (
-                <li className="nav-item">
-                  <Link to={"/user"} className="nav-link">
-                    User
+                    Panel administratora
                   </Link>
                 </li>
               )}
@@ -92,7 +101,7 @@ class App extends Component {
                 </li>
                 <li className="nav-item">
                   <a href="/login" className="nav-link" onClick={this.logOut}>
-                    LogOut
+                    Wyloguj
                   </a>
                 </li>
               </div>
@@ -100,13 +109,7 @@ class App extends Component {
               <div className="navbar-nav ml-auto">
                 <li className="nav-item">
                   <Link to={"/login"} className="nav-link">
-                    Login
-                  </Link>
-                </li>
-
-                <li className="nav-item">
-                  <Link to={"/register"} className="nav-link">
-                    Sign Up
+                    Zaloguj
                   </Link>
                 </li>
               </div>
@@ -117,9 +120,9 @@ class App extends Component {
             <Switch>
               <Route exact path={["/", "/home"]} component={Home} />
               <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
               <Route exact path="/profile" component={Profile} />
-              <Route path="/user" component={BoardUser} />
+              <Route path="/driver" component={BoardDriver} />
+              <Route path="/paker" component={BoardPaker} />
               <Route path="/mod" component={BoardModerator} />
               <Route path="/admin" component={BoardAdmin} />
             </Switch>

@@ -83,12 +83,6 @@ export default class Login extends Component {
     return (
       <div className="col-md-12">
         <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
-
           <Form
             onSubmit={this.handleLogin}
             ref={c => {
@@ -96,7 +90,7 @@ export default class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Login</label>
               <Input
                 type="text"
                 className="form-control"
@@ -108,7 +102,7 @@ export default class Login extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Hasło</label>
               <Input
                 type="password"
                 className="form-control"
