@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import Users from "./admin-panel_tabs_users";
 import Cities from "./admin-panel_tabs_cities";
+import Cars from "./admin-panel_tabs_cars";
 
 
 
@@ -14,6 +15,11 @@ export default class AdminPanelTab extends Component {
       key: "users",
     };
   }
+
+  componentDidMount(){
+    
+  }
+
   render() {
     const { key } = this.state;
     return (
@@ -29,7 +35,7 @@ export default class AdminPanelTab extends Component {
           <Cities />
         </Tab>
         <Tab eventKey="cars" title="Auta">
-          cars
+          <Cars />
         </Tab>
       </Tabs>
     );
