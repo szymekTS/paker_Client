@@ -6,6 +6,7 @@ import * as ReactBootStrap from "react-bootstrap";
 import authService from "../../services/auth.service";
 import cityService from "../../services/city-service";
 import CityDetails from "./admin-panel_tabs_cities_details";
+import CityNew from "./admin-panel_tabs_cities_new";
 
 export default class Cities extends Component {
   constructor(props) {
@@ -37,6 +38,7 @@ export default class Cities extends Component {
       row: {},
       loading: false,
       details: false,
+      newCity: false
     };
   }
 
@@ -46,8 +48,30 @@ export default class Cities extends Component {
   HandleBack = () => {
     this.setState({
       details: false,
+      newCity: false
     });
   };
+  DelOne =() =>{
+    this.setState({
+      details: false,
+    })
+    cityService.deleteCity(this.state.row.id).then(
+      (response) => {
+        console.log(response);
+        this.getCitiesList();
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    )
+  }
 
   getCitiesList = () => {
     this.setState({ loading: false });
@@ -77,7 +101,8 @@ export default class Cities extends Component {
       details,
       loading,
       columns,
-      citiesData
+      citiesData,
+      newCity
     } = this.state;
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
@@ -89,18 +114,28 @@ export default class Cities extends Component {
     };
     return loading ? (
       details ? (
-        <CityDetails row={row} details={details} clickBack={this.HandleBack} />
+        <CityDetails row={row} details={details} clickBack={this.HandleBack} deleteOne={this.DelOne} allCities={citiesData}/>
       ) : (
-        <BootstrapTable
-          keyField="id"
-          striped
-          hover
-          filter={filterFactory()}
-          data={citiesData}
-          columns={columns}
-          rowEvents={rowEvents}
-          pagination={paginationFactory()}
-        />
+        newCity?(<CityNew clickBack={this.HandleBack}/>):(        <>
+          <button
+          style={{ marginTop: 30 }}
+          className="btn btn-success btn-lg"
+          onClick={()=>this.setState({newCity:true})}
+        >
+          Nowe miasto
+        </button>
+          <BootstrapTable
+            keyField="id"
+            striped
+            hover
+            filter={filterFactory()}
+            data={citiesData}
+            columns={columns}
+            rowEvents={rowEvents}
+            pagination={paginationFactory()}
+          />
+          </>)
+
       )
     ) : (
       <div className="d-flex justify-content-center">

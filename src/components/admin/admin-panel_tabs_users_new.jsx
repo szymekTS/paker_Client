@@ -293,8 +293,7 @@ export default class UserNew extends Component {
                   <label className="form-check-label">Administrator</label>
                 </div>
 
-                
-                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Sign Up</button>
+                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Dodaj użytkownika</button>
                 
               </div>
             )}

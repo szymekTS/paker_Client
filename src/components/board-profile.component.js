@@ -4,6 +4,7 @@ import ProfileService from "../services/profile-service";
 import CityService from "../services/city-service";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
+import userService from "../services/user.service";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -14,6 +15,8 @@ export default class Profile extends Component {
       userData: {},
       message: {},
       localization: {},
+      selectedLoc: "",
+      allCities: [],
       oldPassword: "",
       newPassword: "",
       openPass: false,
@@ -61,16 +64,53 @@ export default class Profile extends Component {
           });
         }
       );
+      CityService.getAllCities().then(
+        (response) => {
+          this.setState({
+            allCities: response.data,
+          });
+        },
+        (error) => {
+          this.setState({
+            content:
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString(),
+          });
+        }
+      );
     });
   }
+
+  ChangeLocalization=()=>{
+    this.setState({openLoc: false})
+
+    userService.changeLocation(this.state.currentUser.id, this.state.selectedLoc).then(
+      (response)=>{
+        this.setState({message: response.data.message})
+      }
+    )
+  }
+
 
   OnChangeHandler = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
+  OnSelect = (event)=>{
+    const {value} = event.target
+    console.log(value)
+    this.setState({
+      selectedLoc: value
+    })
+  }
+
+
   render() {
-    const { userData, localization, openPass, openLoc} = this.state;
+    const { userData, localization, openPass, openLoc, allCities } = this.state;
     return (
       <div className="container">
         <header className="jumbotron">
@@ -105,7 +145,7 @@ export default class Profile extends Component {
         >
           Zmień hasło
         </Button>
-        <br/>
+        <br />
         <Collapse in={openPass}>
           <div id="change-password-form">
             <h4>Zmiana hasła</h4>
@@ -134,10 +174,9 @@ export default class Profile extends Component {
 
               <button className="btn btn-secondary btn-lg">Zapisz</button>
             </form>
-            
           </div>
         </Collapse>
-        
+
         <Button
           onClick={() => {
             this.setState((prevState) => {
@@ -148,40 +187,29 @@ export default class Profile extends Component {
           }}
           aria-controls="change-localization-form"
           aria-expanded={openLoc}
-          style={{marginTop: 30}}
+          style={{ marginTop: 30 }}
         >
           Zmień lokalizacje
         </Button>
-        <br/>
+        <br />
         <Collapse in={openLoc}>
           <div id="change-localization-form">
             <h4>Zmiana lokalizacji</h4>
             {this.state.message.message}
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.ChangeLocalization}>
               <div className="form-group">
-                <label>Stare hasło:</label>
-                <input
-                  onChange={this.OnChangeHandler}
-                  name="oldPassword"
-                  type="password"
-                  className="form-control"
-                  value={this.state.oldPassword}
-                />
+                <label>Nowa lokacja:</label>
+                <select 
+                name="localization"
+                onChange={this.OnSelect}
+                >
+                  {allCities.map(city=>{
+                    return (<option key={city.id} value={city.id}>{city.name},{city.zipCode}</option>)
+                  })}
+                </select>
               </div>
-              <div className="form-group">
-                <label>Nowe hasło:</label>
-                <input
-                  onChange={this.OnChangeHandler}
-                  name="newPassword"
-                  type="password"
-                  className="form-control"
-                  value={this.state.newPassword}
-                />
-              </div>
-
               <button className="btn btn-secondary btn-lg">Zapisz</button>
             </form>
-            
           </div>
         </Collapse>
       </div>
