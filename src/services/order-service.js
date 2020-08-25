@@ -1,16 +1,16 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:8900/api/customer/";
+const API_URL = "http://localhost:8900/api/order/";
 
-class CustomerService {
-  getAllCustomers() {
+class OrderService {
+  getAllOrder() {
     return axios.get(API_URL + "find_all", {
       headers: authHeader(),
     });
   }
 
-  deleteCustomer(id) {
+  deleteOrder(id) {
     console.log(id);
     return axios.delete(API_URL + "del", {
       headers: authHeader(),
@@ -19,7 +19,7 @@ class CustomerService {
       },
     });
   }
-  addNewCustomer(name, surname, email) {
+  addNewOrder(name, surname, email) {
     return axios.post(
       API_URL + "new",
       {
@@ -32,4 +32,4 @@ class CustomerService {
   }
 }
 
-export default new CustomerService();
+export default new OrderService();

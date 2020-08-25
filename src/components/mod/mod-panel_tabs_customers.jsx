@@ -55,6 +55,24 @@ export default class Customers extends Component {
     this.setState({
       details: false,
     });
+
+    customerService.deleteCustomer(this.state.row.id).then(
+      (response) => {
+        this.setState({
+          loaded: true,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    )
     
   }
 

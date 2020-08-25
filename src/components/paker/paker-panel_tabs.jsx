@@ -1,29 +1,28 @@
 import React, { Component } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 
-
-export default class DriverPanelTab extends Component {
+export default class PakerPanelTab extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       content: "",
-      key: "orders",
+      key: "paker",
     };
   }
   render() {
     const { key } = this.state;
     return (
       <Tabs
-        id="driver-panel-tabs"
+        id="paker-panel-tabs"
         activeKey={key}
         onSelect={(key) => this.setState({ key })}
       >
-        <Tab eventKey="orders" title="Zamówienia">
-          orders
+        <Tab eventKey="paker" title="Zapakuj">
+          pack it
         </Tab>
-        <Tab eventKey="repairs" title="Zgłoś naprawę">
-          customers
+        <Tab eventKey="maintanence" title="Naprawy">
+          naprawy
         </Tab>
       </Tabs>
     );

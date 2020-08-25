@@ -59,7 +59,7 @@ class App extends Component {
               {showPakerBoard && (
                 <li className="nav-item">
                   <Link to={"/paker"} className="nav-link">
-                    Panel pakowacza
+                    Panel pracownika
                   </Link>
                 </li>
               )}

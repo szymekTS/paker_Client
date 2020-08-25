@@ -1,21 +1,71 @@
 import React, { Component } from "react";
-import { Card } from "react-bootstrap";
-import carService from "../../services/car-service";
+import * as ReactBootStrap from "react-bootstrap";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import CheckButton from "react-validation/build/button";
+import { isEmail } from "validator";
 
-export default class CustomerNew extends Component {
+import customerService from "../../services/customer-service";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        To pole jest wymagane!
+      </div>
+    );
+  }
+};
+
+const email = (value) => {
+  if (!isEmail(value)) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        To nie jest poprawny adres email!
+      </div>
+    );
+  }
+};
+
+const vusername = (value) => {
+  if (value.length < 3 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Login musi mnieć od 3 do 20 znaków!
+      </div>
+    );
+  }
+};
+
+const vpassword = (value) => {
+  if (value.length < 6 || value.length > 40) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Hasło musi mnieć od 6 do 40 znaków!
+      </div>
+    );
+  }
+};
+
+export default class UserNew extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: "",
+      surname: "",
+      email: "",
+
+      successful: false,
       message: "",
     };
   }
 
-  AddNewCar = (event) =>{
-    event.preventDefault()
-
-    this.props.clickBack()
-  }
+  onChangeEmail = (e) => {
+    this.setState({
+      email: e.target.value,
+    });
+  };
 
   OnChangeHandler = (event) => {
     const { name, value, type, checked } = event.target;
@@ -31,20 +81,123 @@ export default class CustomerNew extends Component {
     }
   };
 
+  handleNewCustomer = (e) => {
+    e.preventDefault();
+
+    this.setState({
+      message: "",
+      successful: false,
+    });
+
+    this.form.validateAll();
+
+    if (this.checkBtn.context._errors.length === 0) {
+      customerService.addNewCustomer(this.state.name, this.state.surname, this.state.email).then(
+        (response) => {
+          this.setState({
+            message: response.data.message,
+            successful: true,
+          });
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          this.setState({
+            successful: false,
+            message: resMessage,
+          });
+        }
+      )
+    }
+    this.props.clickBack()
+  };
+
   render() {
     return (
-      <Card>
-        <Card.Title>Nowe Auto</Card.Title>
-        <Card.Body>
-          <button
-            style={{ marginTop: 30 }}
-            className="btn btn-secondary btn-lg"
-            onClick={this.props.clickBack}
+      <ReactBootStrap.Card>
+        <ReactBootStrap.Card.Title>Nowy klient</ReactBootStrap.Card.Title>
+        <ReactBootStrap.Card.Body>
+          <Form
+            onSubmit={this.handleNewCustomer}
+            ref={(c) => {
+              this.form = c;
+            }}
           >
-            Powrót
-          </button>
-        </Card.Body>
-      </Card>
+            {!this.state.successful && (
+              <div>
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.onChangeEmail}
+                    validations={[required, email]}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="name">Imię</label>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={this.state.name}
+                    onChange={this.OnChangeHandler}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="surname">Nazwisko</label>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    name="surname"
+                    value={this.state.surname}
+                    onChange={this.OnChangeHandler}
+                  />
+                </div>
+                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Dodaj klienta</button>
+                
+              </div>
+            )}
+
+            {this.state.message && (
+              <div className="form-group">
+                <div
+                  className={
+                    this.state.successful
+                      ? "alert alert-success"
+                      : "alert alert-danger"
+                  }
+                  role="alert"
+                >
+                  {this.state.message}
+                </div>
+              </div>
+            )}
+            <CheckButton
+              style={{ display: "none" }}
+              ref={(c) => {
+                this.checkBtn = c;
+              }}
+            />
+          </Form>
+          <button
+              style={{ marginTop: 30 }}
+              className="btn btn-secondary btn-lg"
+              onClick={this.props.clickBack}
+            >
+              Powrót
+            </button>
+        </ReactBootStrap.Card.Body>
+      </ReactBootStrap.Card>
     );
   }
 }

@@ -203,7 +203,7 @@ export default class UsersDetail extends Component {
                     name="role_paker"
                     checked={this.state.role_paker}
                   />
-                  <label className="form-check-label">Pakowacz</label>
+                  <label className="form-check-label">Pracownik</label>
                 </div>
                 <div className="form-check">
                   <input

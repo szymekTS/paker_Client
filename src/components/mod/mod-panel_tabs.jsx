@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import Customers from "./mod-panel_tabs_customers";
+import Orders from "./mod-panel_tabs_orders";
 
 export default class ModPanelTab extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export default class ModPanelTab extends Component {
           <Customers />
         </Tab>
         <Tab eventKey="orders" title="Zamówienia">
-          orders
+          <Orders />
         </Tab>
       </Tabs>
     );

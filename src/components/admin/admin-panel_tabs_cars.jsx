@@ -19,19 +19,18 @@ export default class Cars extends Component {
           sort: true,
           filter: textFilter(),
         },
-        { dataField: "model", text: "Model", sort: true, filter: textFilter() },
+        { 
+          dataField: "model", 
+          text: "Model", 
+          sort: true, 
+          filter: textFilter() 
+        },
         {
           dataField: "licensePlate",
           text: "Numery rejestracyjne",
           sort: true,
           filter: textFilter(),
         },
-        {
-          dataField: "number",
-          text: "Numer",
-          sort: true,
-          filter: textFilter(),
-        }
       ],
       carsData: [],
       row: {},
@@ -75,8 +74,8 @@ export default class Cars extends Component {
             error.toString(),
         });
       }
-    )
-  }
+    );
+  };
 
   getCarsList = () => {
     this.setState({ loading: false });
@@ -101,14 +100,7 @@ export default class Cars extends Component {
   };
 
   render() {
-    const {
-      row,
-      details,
-      loaded,
-      carsData,
-      columns,
-      newCar,
-    } = this.state;
+    const { row, details, loaded, carsData, columns, newCar } = this.state;
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
         this.setState({
@@ -126,15 +118,14 @@ export default class Cars extends Component {
           clickBack={this.HandleBackFromEdit}
           deleteOne={this.DeleteUser}
         />
+      ) : newCar ? (
+        <CarNew clickBack={this.HandleBackFromNewUser} />
       ) : (
-        newCar?(
-          <CarNew clickBack={this.HandleBackFromNewUser}/>
-        ):(
-          <>
+        <>
           <button
             style={{ marginTop: 30 }}
             className="btn btn-success btn-lg"
-            onClick={()=>this.setState({newCar:true})}
+            onClick={() => this.setState({ newCar: true })}
           >
             Nowe auto
           </button>
@@ -149,8 +140,6 @@ export default class Cars extends Component {
             pagination={paginationFactory()}
           />
         </>
-        )
-        
       )
     ) : (
       <div className="d-flex justify-content-center">
