@@ -16,7 +16,8 @@ export default class UsersDetail extends Component {
       email: props.row.email,
       roles: props.row.roles,
       localization: "",
-      isFree: props.row.isFree,
+      isFree: props.row.free,
+      isDriver: props.row.driver,
 
       role_admin: false,
       role_moderator: false,
@@ -70,7 +71,7 @@ export default class UsersDetail extends Component {
     event.preventDefault()
     const rolesArray = this.GenerateRoleArray();
 
-    userService.updateUser(this.state.userName, this.state.name, this.state.surname, this.state.number, this.state.email, rolesArray, this.state.row.localization).then(
+    userService.updateUser(this.state.userName, this.state.name, this.state.surname, this.state.number, this.state.email, rolesArray, this.state.row.localization,this.state.isDriver).then(
       (response) => {
         this.setState({
           localization: response.data.name,
@@ -234,6 +235,17 @@ export default class UsersDetail extends Component {
                     checked={this.state.role_admin}
                   />
                   <label className="form-check-label">Administrator</label>
+                </div>
+                <label>Kierowca:</label>
+                <div className="form-check">
+                  <input
+                    onChange={this.OnChangeHandler}
+                    className="form-check-input"
+                    type="checkbox"
+                    name="isDriver"
+                    checked={this.state.isDriver}
+                  />
+                  <label className="form-check-label">Kierowca</label>
                 </div>
               </div>
               <button className="btn btn-primary btn-lg" onClick={this.UpdateUser} >Zapisz zmiany</button>

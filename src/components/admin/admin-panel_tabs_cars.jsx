@@ -45,15 +45,12 @@ export default class Cars extends Component {
   componentDidMount() {
     this.getCarsList();
   }
-  HandleBackFromEdit = () => {
+  HandleBack = () => {
     this.setState({
       details: false,
+      newCar: false
     });
-  };
-  HandleBackFromNewUser = () => {
-    this.setState({
-      newCar: false,
-    });
+    setTimeout(() => {  this.getCarsList() }, 1000);
   };
   DeleteUser = () => {
     this.setState({
@@ -115,11 +112,11 @@ export default class Cars extends Component {
         <CarDetails
           row={row}
           details={details}
-          clickBack={this.HandleBackFromEdit}
+          clickBack={this.HandleBack}
           deleteOne={this.DeleteUser}
         />
       ) : newCar ? (
-        <CarNew clickBack={this.HandleBackFromNewUser} />
+        <CarNew clickBack={this.HandleBack} />
       ) : (
         <>
           <button

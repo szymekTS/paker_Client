@@ -65,7 +65,7 @@ export default class CityNew extends Component {
             <div className="form-group">
             <label>Województwo</label>
               <select
-                className="form-control"
+                
                 name="province"
                 onChange={this.OnChangeHandler}
               >

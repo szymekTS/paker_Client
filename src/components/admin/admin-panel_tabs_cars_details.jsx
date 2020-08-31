@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Card } from "react-bootstrap";
 import cityService from "../../services/city-service";
+import carService from "../../services/car-service";
 
 export default class CarDetails extends Component {
   constructor(props) {
@@ -12,29 +13,98 @@ export default class CarDetails extends Component {
       model: props.row.model,
       licensePlate: props.row.licensePlate,
       carType: props.row.carType,
+      localization: props.row.localization,
+      inRepair: props.row.inRepair,
+      isFree: props.row.free,
 
-      selected: "",
+      cityData: [],
+
+
+      changed: true,
       distance: 0,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getCitiesList();
+  }
+
+  getCitiesList = () => {
+    cityService.getAllCities().then(
+      (response) => {
+        this.setState({
+          cityData: response.data,
+          loaded: true,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  };
+
+
+  UpdateCar = () =>{
+    console.log(this.state.id, this.state.localization, this.state.inRepair,this.state.isFree)
+      carService.updateCar(this.state.id, this.state.localization, this.state.inRepair, this.state.isFree).then(
+        (error) => {
+          this.setState({
+            content:
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString(),
+          });
+        }
+      )
+      this.props.clickBack()
+  }
 
   OnSelect = (event) => {
-    const { value } = event.target;
+    const { value} = event.target;
     this.setState({
-      selected: value,
-    });
-  };
-  OnDistance = (event) => {
-    const { value } = event.target;
-    this.setState({
-      distance: value,
+      localization: value,
+      changed: false
     });
   };
 
+  OnCheckbox = (event) => {
+    const { checked} = event.target;
+    this.setState({
+      inRepair: checked,
+      changed: false
+    });
+  };
+  OnCheckboxFree = (event) => {
+    const { checked} = event.target;
+    this.setState({
+      isFree: checked,
+      changed: false
+    });
+  };
+
+
   render() {
-    const { id, brand, model, carType, licensePlate } = this.state;
+    const {
+      id,
+      brand,
+      model,
+      carType,
+      licensePlate,
+      cityData,
+      localization,
+      inRepair,
+      changed,
+      isFree
+    } = this.state;
     return (
       <Card>
         <Card.Title>
@@ -86,7 +156,51 @@ export default class CarDetails extends Component {
                 className="form-control"
                 readOnly
               />
+              <label>Lokalizacja:</label>
+              <select
+                name="localization"
+                value={localization}
+                onChange={this.OnSelect}
+                className="form-control"
+              >
+                <option>----</option>
+                {cityData.map((city) => {
+                  return (
+                    <option key={city.id} value={city.id}>
+                      {city.name}, {city.zipCode}
+                    </option>
+                  );
+                })}
+              </select>
+              <div className="form-check">
+                  <input
+                    onChange={this.OnCheckbox}
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={inRepair}
+                    name="inRepair"
+                  />
+                  <label className="form-check-label">W naprawie</label>
+                </div>
+                <div className="form-check">
+                  <input
+                    onChange={this.OnCheckboxFree}
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={isFree}
+                    name="isFree"
+                  />
+                  <label className="form-check-label">Dostępny</label>
+                </div>
             </div>
+            <button
+            style={{ marginTop: 30 }}
+            className="btn btn-primary btn-lg"
+            onClick={this.UpdateCar}
+            disabled={changed}
+          >
+            Zapisz zmiany
+          </button>
           </form>
           <button
             style={{ marginTop: 30 }}

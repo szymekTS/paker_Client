@@ -50,6 +50,7 @@ export default class Cities extends Component {
       details: false,
       newCity: false
     });
+    setTimeout(() => {  this.getCitiesList() }, 1000);
   };
   DelOne =() =>{
     this.setState({

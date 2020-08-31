@@ -73,7 +73,7 @@ export default class Customers extends Component {
         });
       }
     )
-    
+    this.getCustomerList()    
   }
 
   getCustomerList = () => {

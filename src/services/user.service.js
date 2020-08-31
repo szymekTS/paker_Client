@@ -23,8 +23,8 @@ class UserService {
     return axios.get(API_URL + "find_all", this.state.option);
   }
 
-  updateUser(username, name, surname, number, email, roles, localization) {
-    console.log(roles)
+  updateUser(username, name, surname, number, email, roles, localization,driver) {
+    console.log("update driver:" + driver)
     return axios.post(
       API_URL + "update",
       {
@@ -34,14 +34,15 @@ class UserService {
         number: number,
         email: email,
         roles:roles,
-        localization: localization
+        localization: localization,
+        isDriver: driver
       },
       this.state.option
     );
   }
 
-  createUser(username, name, surname, number, email, password, roles, localization) {
-    console.log(roles)
+  createUser(username, name, surname, number, email, password, roles, localization, driver) {
+    console.log("create driver:" + localization)
     return axios.post(
       API_URL + "new",
       {
@@ -52,7 +53,9 @@ class UserService {
         email: email,
         password: password,
         roles:roles,
-        localization: localization
+        localization: localization,
+        isFree: true,
+        isDriver: driver
       },
       this.state.option
     );
@@ -90,6 +93,14 @@ class UserService {
       },
       this.state.option
     );
+  }
+  findFreeDriverInLoc(localization){
+    return axios.get(API_URL + "find_driver_loc", {
+      headers: authHeader(),
+      params: {
+        localization: localization,
+      },
+    });
   }
 }
 

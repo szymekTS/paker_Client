@@ -3,7 +3,7 @@ import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8900/api/car/";
 
-class CityService {
+class CarService {
   getAllCars(){
     return axios.get(API_URL + "find_all",{
       headers: authHeader(),
@@ -20,19 +20,41 @@ class CityService {
     }
     );
   }
-  addNewCar(brand, model, licensePlate, carType) {
+  addNewCar(brand, model, licensePlate,localization, carType) {
     return axios.post(API_URL + "new",
     {
         brand: brand,
         model: model,
         licensePlate: licensePlate,
-        carType: carType
+        carType: carType,
+        localization:localization
 
     },
     {headers: authHeader()} 
   );
   }
+  updateCar(id,localization, isRepair, isFree) {
+    return axios.post(API_URL + "updejt",
+    {
+        id: id,
+        localization: localization,
+        repairing: isRepair,
+        free: isFree
+    },
+    {headers: authHeader()} 
+  );
+  }
 
+  getCarLocType(localization, carType) {
+    return axios.get(API_URL + "find_good_loc", {
+      headers: authHeader(),
+      params: {
+        localization: localization,
+        type: carType
+      },
+    });
+  }
+  
 }
 
-export default new CityService();
+export default new CarService();

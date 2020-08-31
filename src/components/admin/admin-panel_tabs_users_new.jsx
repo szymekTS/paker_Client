@@ -62,7 +62,9 @@ export default class UserNew extends Component {
       email: "",
       roles: [],
       password: "",
+      localization: "",
       isFree: true,
+      isDriver: false,
       role_admin: false,
       role_moderator: false,
       role_driver: false,
@@ -78,6 +80,7 @@ export default class UserNew extends Component {
   componentDidMount(){
     userService.findById(this.state.currentUser.id).then(
       (response) => {
+        console.log(response.data)
         this.setState({
           localization: response.data.localization,
         });
@@ -144,7 +147,8 @@ export default class UserNew extends Component {
           this.state.email,
           this.state.password,
           rolesArray,
-          this.state.localization
+          this.state.localization,
+          this.state.isDriver
         )
         .then(
           (response) => {
@@ -152,6 +156,7 @@ export default class UserNew extends Component {
               message: response.data.message,
               successful: true,
             });
+            this.props.clickBack()
           },
           (error) => {
             const resMessage =
@@ -291,6 +296,17 @@ export default class UserNew extends Component {
                     checked={this.state.role_admin}
                   />
                   <label className="form-check-label">Administrator</label>
+                </div>
+                <label>Kierowca:</label>
+                <div className="form-check">
+                  <input
+                    onChange={this.OnChangeHandler}
+                    className="form-check-input"
+                    type="checkbox"
+                    name="isDriver"
+                    checked={this.state.isDriver}
+                  />
+                  <label className="form-check-label">Kierowca</label>
                 </div>
 
                   <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Dodaj użytkownika</button>

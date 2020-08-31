@@ -48,16 +48,14 @@ export default class Users extends Component {
   componentDidMount() {
     this.getUserList();
   }
-  HandleBackFromEdit = () => {
+  HandleBack = () => {
     this.setState({
       details: false,
-    });
-  };
-  HandleBackFromNewUser = () => {
-    this.setState({
       newUser: false,
     });
+    setTimeout(() => {  this.getUserList() }, 1000);
   };
+
   DeleteUser = () => {
     this.setState({
       details: false,
@@ -125,12 +123,12 @@ export default class Users extends Component {
         <UserDetails
           row={row}
           details={details}
-          clickBack={this.HandleBackFromEdit}
+          clickBack={this.HandleBack}
           deleteOne={this.DeleteUser}
         />
       ) : (
         newUser?(
-          <UserNew clickBack={this.HandleBackFromNewUser}/>
+          <UserNew clickBack={this.HandleBack}/>
         ):(
           <>
           <button

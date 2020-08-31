@@ -1,23 +1,51 @@
 import React, { Component } from "react";
 import { Card } from "react-bootstrap";
 import carService from "../../services/car-service";
+import cityService from "../../services/city-service";
 
 export default class CarNew extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      cityData:[],
       message: "",
       brand: "",
       model: "",
       licensePlate: "",
+      localization: "",
       carType: "",
     };
   }
 
+  componentDidMount(){
+    this.getCitiesList()
+  }
+
+  getCitiesList = () => {
+    cityService.getAllCities().then(
+      (response) => {
+        this.setState({
+          cityData: response.data,
+          loaded: true,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  };
+
   AddNewCar = (event) =>{
     event.preventDefault()
-    carService.addNewCar(this.state.brand, this.state.model, this.state.licensePlate, this.state.carType).then(
+    carService.addNewCar(this.state.brand, this.state.model, this.state.licensePlate, this.state.localization, this.state.carType).then(
       (response) => {
         console.log(response)
     },
@@ -103,6 +131,23 @@ export default class CarNew extends Component {
                 <option key="4" value="TYPE_SPECIAL">
                   TIR
                 </option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Lokalizacja</label>
+              <select
+                className="form-control"
+                name="localization"
+                onChange={this.OnChangeHandler}
+              >
+                <option>---</option>
+                {this.state.cityData.map((city) => {
+                return (
+                  <option key={city.id} value={city.id}>
+                    {city.name},{city.zipCode}
+                  </option>
+                );
+              })}
               </select>
             </div>
             <button

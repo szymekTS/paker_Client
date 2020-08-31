@@ -5,6 +5,8 @@ import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import * as ReactBootStrap from "react-bootstrap";
 import CustomerDetails from "./mod-panel_tabs_customers_details";
 import orderService from "../../services/order-service";
+import cityService from "../../services/city-service";
+import OrderDetails from "./mod-panel_tabs_orders_details";
 
 export default class Orders extends Component {
   constructor(props) {
@@ -21,6 +23,12 @@ export default class Orders extends Component {
         {
           dataField: "customer",
           text: "Klient",
+          sort: true,
+          filter: textFilter(),
+        },
+        {
+          dataField: "driver",
+          text: "Kierowca",
           sort: true,
           filter: textFilter(),
         },
@@ -60,6 +68,7 @@ export default class Orders extends Component {
       details: false,
       newCustomer: false,
     });
+    this.getOrderList()
   };
 
   getOrderList = () => {
@@ -83,8 +92,9 @@ export default class Orders extends Component {
     );
   };
 
+
   render() {
-    const { row, details, loaded, orderData, columns, newOrder } = this.state;
+    const { row, details, loaded, orderData, columns } = this.state;
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
         this.setState({
@@ -96,7 +106,7 @@ export default class Orders extends Component {
     };
     return loaded ? (
       details ? (
-        <CustomerDetails
+        <OrderDetails
           row={row}
           details={details}
           clickBack={this.HandleBack}
