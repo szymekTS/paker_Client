@@ -118,7 +118,7 @@ export default class RepairDetails extends Component {
                     <b>Opis:</b> {repair.description}<br></br>
                     <b>Start:</b> {new Date(repair.startTime).toLocaleDateString()} {new Date(repair.startTime).toLocaleTimeString()}<br></br>
                     
-                    {repair.status === "DONE"&&(<><b>Koniec:</b> {new Date(repair.startTime).toLocaleDateString()} {new Date(repair.startTime).toLocaleTimeString()}</>)
+                    {repair.status === "DONE"&&(<><b>Koniec:</b> {new Date(repair.startTime).toLocaleDateString()} {new Date(repair.doneTime).toLocaleTimeString()}</>)
                     } 
                 </il>)
               })}
@@ -132,6 +132,7 @@ export default class RepairDetails extends Component {
           >
             Zmień status
           </button>)}
+          <br></br>
           <button
             style={{ marginTop: 30 }}
             className="btn btn-secondary btn-lg"

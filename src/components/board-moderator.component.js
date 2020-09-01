@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import ModPanelTab from "./mod/mod-panel_tabs";
-import { Route, Link } from "react-router-dom";
 import Home from "./home.component";
 import authService from "../services/auth.service";
+import { Link } from "react-router-dom";
 
 export default class BoardModerator extends Component {
   constructor(props) {
