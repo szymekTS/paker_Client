@@ -80,7 +80,6 @@ export default class CityDetails extends Component {
 
   render() {
     const { id, name, province, zipCode ,neighbours, names} = this.state;
-    const i =0;
     const list =[];
     for(var key in neighbours){
       list.push({name:`${names[key]} - ${neighbours[key] } km`,id:key})

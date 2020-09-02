@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Card, Button, Collapse } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import orderService from "../../services/order-service";
 import authService from "../../services/auth.service";
-import cityService from "../../services/city-service";
 
-export default class OrderDetails extends Component {
+export default class PakerOrderDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -18,28 +17,22 @@ export default class OrderDetails extends Component {
       origin: props.row.origin,
       destiny: props.row.destiny,
 
-      destinyCity: {},
-      carDetails: {},
-
       statusData: [],
-      routeData: {},
-      route: [],
+      cargo: {},
+      cargoList:[],
+
       status: "",
       comments: "",
-      isDeleted: props.row.lastStatus.includes("STATUS_DELETED"),
+      isValid: props.row.lastStatus.includes("STATUS_ACCEPTED"),
       selected: "",
       distance: 0,
-      openStatuses: false,
-      openRoute: false,
     };
   }
 
   componentDidMount() {
-    this.GetRoute();
-    this.GetCityDetails();
+    this.GetCargo();
     orderService.getStatusList(this.state.id).then(
       (response) => {
-        console.log(response.data.list);
         this.setState({
           statusData: response.data.list,
         });
@@ -56,68 +49,26 @@ export default class OrderDetails extends Component {
       }
     );
   }
-  GetRoute = () => {
-    orderService.getRoute(this.state.id).then(
-      (response) => {
-        this.setState({
-          routeData: response.data,
-          route: response.data.route,
-        });
-      },
-      (error) => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString(),
-        });
-      }
-    );
-  };
-  GetCityDetails = () => {
-    cityService.getCityDataName(this.state.destiny).then(
-      (response) => {
-        this.setState({
-          destinyCity: response.data,
-        });
-      },
-      (error) => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString(),
-        });
-      }
-    );
-  };
 
-  DeleteOrder = () => {
-    orderService
-      .addNewStatus(
-        this.state.id,
-        this.state.currUser.id,
-        "STATUS_DELETED",
-        "zamówienie usunięte"
-      )
-      .then(
-        (response) => {},
-        (error) => {
-          this.setState({
-            content:
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString(),
-          });
-        }
-      );
-    this.props.clickBack();
+  GetCargo = () => {
+    orderService.getCargo(this.state.id).then(
+      (response) => {
+        this.setState({
+          cargo: response.data,
+          cargoList: response.data.register,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
   };
 
   AddStatus = (e) => {
@@ -168,12 +119,9 @@ export default class OrderDetails extends Component {
       destiny,
       lastStatus,
       statusData,
-      isDeleted,
-      openStatuses,
-      openRoute,
-      destinyCity,
-      route,
-      routeData,
+      isValid,
+      cargo,
+      cargoList
     } = this.state;
     return (
       <Card>
@@ -235,76 +183,45 @@ export default class OrderDetails extends Component {
               className="form-control"
               readOnly
             />
-                        <label>Historia statusów:</label>
-            <Button
-              onClick={() => {
-                this.setState((prevState) => {
-                  return {
-                    openStatuses: !prevState.openStatuses,
-                  };
-                });
-              }}
-              aria-controls="change-localization-form"
-              aria-expanded={openStatuses}
-              style={{ marginTop: 30 }}
-            >
-              Pokaż poprzednie statusy
-            </Button>
-            <br />
-            <Collapse in={openStatuses}>
-              <ul className="list-group">
-                {statusData.map((status) => {
-                  return (
-                    <li className="list-group-item" key={status.id}>
-                      Kod: {status.statusCode}
-                      <br></br>
-                      Opis: {status.comments}
-                      <br></br>
-                      Data: {new Date(status.date).toUTCString()}
-                    </li>
-                  );
-                })}
-              </ul>
-            </Collapse>
-            <Button
-              onClick={() => {
-                this.setState((prevState) => {
-                  return {
-                    openRoute: !prevState.openRoute,
-                  };
-                });
-              }}
-              aria-controls="change-localization-form"
-              aria-expanded={openRoute}
-              style={{ marginTop: 30 }}
-            >
-              Pokaż trasę
-            </Button>
-            <br />
-            <Collapse in={openRoute}>
-              <ul className="list-group">
-                <li className="list-group-item" key={destiny}>
-                  <b>
-                    Trasa {origin} - {destiny}, odległość: {routeData.distance}{" "}
-                    km
-                  </b>
-                </li>
-                {route.map((city) => {
-                  return (
-                    <li className="list-group-item" key={city.id}>
-                      {city.name} - {city.zipCode}
-                    </li>
-                  );
-                })}
-                <li className="list-group-item" key={destinyCity.id}>
-                  {destinyCity.name} - {destinyCity.zipCode}
-                </li>
-              </ul>
-            </Collapse>
+
+            <label>Ładunek:</label>
+            <ul className="list-group">
+              <li className="list-group-item" key="title">
+                Wartość: {cargo.value} PLN, Waga: {cargo.weight} kg
+              </li>
+              {cargoList.map((item) => {
+                return (
+                  <li className="list-group-item" key={item.name}>
+                    <b>Opis:</b> {item.name}
+                    <br></br>
+                    <b>Wymiary(cm):</b><br></br>
+                    szerokość: {item.width}, głębokość: {item.depth}, wysokość: {item.height}, 
+                    <br></br>
+                    <b>Waga:</b> {item.weight} kg
+                    <br></br>
+                    <b>Wartość:</b> {item.value} PLN
+                  </li>
+                );
+              })}
+            </ul>
+
+            <label>Historia statusów:</label>
+            <ul className="list-group">
+              {statusData.map((status) => {
+                return (
+                  <li className="list-group-item" key={status.id}>
+                    Kod: {status.statusCode}
+                    <br></br>
+                    Opis: {status.comments}
+                    <br></br>
+                    Data: {new Date(status.date).toUTCString()}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-          {isDeleted ? (
-            <></>
-          ) : (
+
+          {isValid ? (
             <>
               <form>
                 <div className="form-group">
@@ -317,9 +234,7 @@ export default class OrderDetails extends Component {
                     className="form-control"
                   >
                     <option>---</option>
-                    <option value="STATUS_PACKING">Pakowanie</option>
-                    <option value="STATUS_TRANSPORTING">Transport</option>
-                    <option value="STATUS_DELIVERED">Dostarczono</option>
+                    <option value="STATUS_PACKING">Zapakowane</option>
                   </select>
                   <label>Opis:</label>
                   <input
@@ -336,15 +251,9 @@ export default class OrderDetails extends Component {
                   Zapisz status
                 </button>
               </form>
-              <button
-                style={{ marginTop: 30 }}
-                className="btn btn-danger btn-lg"
-                onClick={this.DeleteOrder}
-              >
-                Usuń zamówienie
-              </button>
-              <br />
             </>
+          ) : (
+            <></>
           )}
 
           <button

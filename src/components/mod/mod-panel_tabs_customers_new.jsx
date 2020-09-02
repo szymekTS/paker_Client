@@ -27,26 +27,6 @@ const email = (value) => {
   }
 };
 
-const vusername = (value) => {
-  if (value.length < 3 || value.length > 20) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Login musi mnieć od 3 do 20 znaków!
-      </div>
-    );
-  }
-};
-
-const vpassword = (value) => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Hasło musi mnieć od 6 do 40 znaków!
-      </div>
-    );
-  }
-};
-
 export default class UserNew extends Component {
   constructor(props) {
     super(props);

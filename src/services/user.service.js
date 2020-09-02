@@ -24,7 +24,6 @@ class UserService {
   }
 
   updateUser(username, name, surname, number, email, roles, localization,driver) {
-    console.log("update driver:" + driver)
     return axios.post(
       API_URL + "update",
       {
@@ -42,7 +41,6 @@ class UserService {
   }
 
   createUser(username, name, surname, number, email, password, roles, localization, driver) {
-    console.log("create driver:" + localization)
     return axios.post(
       API_URL + "new",
       {

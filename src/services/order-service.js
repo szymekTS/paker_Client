@@ -1,6 +1,5 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import userService from "./user.service";
 
 const API_URL = "http://localhost:8900/api/order/";
 
@@ -50,10 +49,45 @@ class OrderService {
     );
   }
 
+  getOrdersToPackInLoc(status, localization) {
+    return axios.get(API_URL + "find_status_localization", {
+      headers: authHeader(),
+      params: {
+        status: status,
+        localization: localization
+      },
+    });
+  }
 
+  getDriverOrders(id) {
+    return axios.get(API_URL + "find_driver", {
+      headers: authHeader(),
+      params: {
+        driver: id
+      },
+    });
+  }
+
+  getRoute(id) {
+    return axios.get(API_URL + "get_route", {
+      headers: authHeader(),
+      params: {
+        id: id
+      },
+    });
+  }
 
   getStatusList(id) {
     return axios.get(API_URL + "get_statuslist", {
+      headers: authHeader(),
+      params: {
+        id: id
+      },
+    });
+  }
+
+  getCargo(id) {
+    return axios.get(API_URL + "get_cargo", {
       headers: authHeader(),
       params: {
         id: id

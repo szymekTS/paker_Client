@@ -4,13 +4,16 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import * as ReactBootStrap from "react-bootstrap";
 import orderService from "../../services/order-service";
-import OrderDetails from "./mod-panel_tabs_orders_details";
+import authService from "../../services/auth.service";
+import userService from "../../services/user.service";
+import PakerOrderDetails from "./paker-panel_tabs_orders_details";
 
-export default class Orders extends Component {
+export default class PakerOrders extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+        current : authService.getCurrentUser(),
       columns: [
         {
           dataField: "car",
@@ -21,12 +24,6 @@ export default class Orders extends Component {
         {
           dataField: "customer",
           text: "Klient",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "driver",
-          text: "Kierowca",
           sort: true,
           filter: textFilter(),
         },
@@ -52,6 +49,7 @@ export default class Orders extends Component {
       orderData: [],
       row: {},
       id: "",
+      localization: "",
       loaded: false,
       details: false,
       newOrder: false,
@@ -59,7 +57,8 @@ export default class Orders extends Component {
   }
 
   componentDidMount() {
-    this.getOrderList();
+    this.getLocalization();
+    
   }
   HandleBack = () => {
     this.setState({
@@ -69,8 +68,21 @@ export default class Orders extends Component {
     setTimeout(() => {  this.getOrderList() }, 1000);
   };
 
+  getLocalization = ()=>{
+    userService.findById(this.state.current.id).then(
+      (response) => {
+        this.setState({
+          localization: response.data.localization,
+        });
+        this.getOrderList();
+      },
+      (error) => {
+        console.log(error)
+        });
+  }
+
   getOrderList = () => {
-    orderService.getAllOrder().then(
+    orderService.getOrdersToPackInLoc("STATUS_ACCEPTED",this.state.localization).then(
       (response) => {
         this.setState({
           orderData: response.data,
@@ -104,7 +116,7 @@ export default class Orders extends Component {
     };
     return loaded ? (
       details ? (
-        <OrderDetails
+        <PakerOrderDetails
           row={row}
           details={details}
           clickBack={this.HandleBack}

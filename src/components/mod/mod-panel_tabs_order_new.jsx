@@ -187,11 +187,7 @@ export default class OrderNew extends Component {
         });
       }
     }
-    if(this.state.cargo.length==0){
-      if(this.state.checkTypeButton)
-      this.setState({
-        checkTypeButton: false
-      })
+    if(this.state.cargo.length===0){
       if(this.state.checkTypeButton)
       this.setState({
         checkTypeButton: false
@@ -260,6 +256,7 @@ export default class OrderNew extends Component {
 
   OnItemChange = (e) => {
     this.setState({
+      isCar: false,
       canCar: false,
       carType: "",
     });
@@ -286,6 +283,7 @@ export default class OrderNew extends Component {
       isDriver,
       canCar,
       carData,
+      isCar,
     } = this.state;
     return (
       <ReactBootStrap.Card>
@@ -484,6 +482,7 @@ export default class OrderNew extends Component {
               style={{ marginTop: 30 }}
               className="btn btn-primary btn-lg"
               type="submit"
+              disabled = {!isCar}
               onClick={this.saveOrder}
             >
               Zapisz zamówienie

@@ -80,7 +80,6 @@ export default class UserNew extends Component {
   componentDidMount(){
     userService.findById(this.state.currentUser.id).then(
       (response) => {
-        console.log(response.data)
         this.setState({
           localization: response.data.localization,
         });

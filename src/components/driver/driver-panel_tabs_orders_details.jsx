@@ -3,8 +3,10 @@ import { Card, Button, Collapse } from "react-bootstrap";
 import orderService from "../../services/order-service";
 import authService from "../../services/auth.service";
 import cityService from "../../services/city-service";
+import carService from "../../services/car-service";
+import userService from "../../services/user.service";
 
-export default class OrderDetails extends Component {
+export default class DriverOrderDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -17,85 +19,32 @@ export default class OrderDetails extends Component {
       lastStatus: props.row.lastStatus,
       origin: props.row.origin,
       destiny: props.row.destiny,
-
       destinyCity: {},
       carDetails: {},
 
       statusData: [],
       routeData: {},
       route: [],
+
+      localization: "",
       status: "",
       comments: "",
-      isDeleted: props.row.lastStatus.includes("STATUS_DELETED"),
+      isValid: false,
       selected: "",
       distance: 0,
+
       openStatuses: false,
       openRoute: false,
     };
   }
+  checkValid = () => {
+    const a = this.props.row.lastStatus.includes("STATUS_PACKING");
+    const b = this.props.row.lastStatus.includes("STATUS_TRANSPORTING");
 
-  componentDidMount() {
-    this.GetRoute();
-    this.GetCityDetails();
-    orderService.getStatusList(this.state.id).then(
-      (response) => {
-        console.log(response.data.list);
-        this.setState({
-          statusData: response.data.list,
-        });
-      },
-      (error) => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString(),
-        });
-      }
-    );
-  }
-  GetRoute = () => {
-    orderService.getRoute(this.state.id).then(
-      (response) => {
-        this.setState({
-          routeData: response.data,
-          route: response.data.route,
-        });
-      },
-      (error) => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString(),
-        });
-      }
-    );
+    this.setState({
+      isValid:a||b
+    })
   };
-  GetCityDetails = () => {
-    cityService.getCityDataName(this.state.destiny).then(
-      (response) => {
-        this.setState({
-          destinyCity: response.data,
-        });
-      },
-      (error) => {
-        this.setState({
-          content:
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString(),
-        });
-      }
-    );
-  };
-
   DeleteOrder = () => {
     orderService
       .addNewStatus(
@@ -119,9 +68,105 @@ export default class OrderDetails extends Component {
       );
     this.props.clickBack();
   };
+  componentDidMount() {
+    this.checkValid();
+    this.GetRoute();
+    this.GetCityDetails();
+    this.GetCarDetails();
+    orderService.getStatusList(this.state.id).then(
+      (response) => {
+        this.setState({
+          statusData: response.data.list,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  }
+
+  GetRoute = () => {
+    orderService.getRoute(this.state.id).then(
+      (response) => {
+        this.setState({
+          routeData: response.data,
+          route: response.data.route,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  };
+
+  GetCarDetails = () => {
+    carService.findByPlate(this.state.car).then(
+      (response) => {
+        this.setState({
+          carDetails: response.data,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  };
+
+  GetCityDetails = () => {
+    cityService.getCityDataName(this.state.destiny).then(
+      (response) => {
+        this.setState({
+          destinyCity: response.data,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  };
 
   AddStatus = (e) => {
     e.preventDefault();
+
+    userService
+      .changeLocation(this.state.currUser.id, this.state.localization)
+      .then((response) => {
+        this.setState({ message: response.data.message });
+      });
+    carService
+      .updateCar(this.state.carDetails[0].id, this.state.localization, this.state.carDetails[0].isRepair,  this.state.carDetails[0].isFree)
+      .then((response) => {
+        this.setState({ message: response.data.message });
+      });
+
     orderService
       .addNewStatus(
         this.state.id,
@@ -151,6 +196,13 @@ export default class OrderDetails extends Component {
       status: value,
     });
   };
+
+  OnLoc = (event) => {
+    const { value } = event.target;
+    this.setState({
+      localization: value,
+    });
+  };
   OnComments = (event) => {
     const { value } = event.target;
     this.setState({
@@ -168,7 +220,7 @@ export default class OrderDetails extends Component {
       destiny,
       lastStatus,
       statusData,
-      isDeleted,
+      isValid,
       openStatuses,
       openRoute,
       destinyCity,
@@ -235,7 +287,7 @@ export default class OrderDetails extends Component {
               className="form-control"
               readOnly
             />
-                        <label>Historia statusów:</label>
+            <label>Historia statusów:</label>
             <Button
               onClick={() => {
                 this.setState((prevState) => {
@@ -302,13 +354,30 @@ export default class OrderDetails extends Component {
               </ul>
             </Collapse>
           </div>
-          {isDeleted ? (
-            <></>
-          ) : (
+          {isValid ? (
             <>
               <form>
                 <div className="form-group">
                   <label>Dodaj nowy status:</label>
+                  <label>Lokalizacja:</label>
+                  <select
+                    name="localization"
+                    onChange={this.OnLoc}
+                    value={this.state.localization}
+                    className="form-control"
+                  >
+                    <option>---</option>
+                    {route.map((city) => {
+                      return (
+                        <option key={city.id} value={city.id}>
+                          {city.name}, {city.zipCode}
+                        </option>
+                      );
+                    })}
+                    <option key={destinyCity.id} value={destinyCity.id}>
+                      {destinyCity.name}, {destinyCity.zipCode}
+                    </option>
+                  </select>
                   <label>Status:</label>
                   <select
                     name="status"
@@ -317,7 +386,6 @@ export default class OrderDetails extends Component {
                     className="form-control"
                   >
                     <option>---</option>
-                    <option value="STATUS_PACKING">Pakowanie</option>
                     <option value="STATUS_TRANSPORTING">Transport</option>
                     <option value="STATUS_DELIVERED">Dostarczono</option>
                   </select>
@@ -336,15 +404,9 @@ export default class OrderDetails extends Component {
                   Zapisz status
                 </button>
               </form>
-              <button
-                style={{ marginTop: 30 }}
-                className="btn btn-danger btn-lg"
-                onClick={this.DeleteOrder}
-              >
-                Usuń zamówienie
-              </button>
-              <br />
             </>
+          ) : (
+            <></>
           )}
 
           <button

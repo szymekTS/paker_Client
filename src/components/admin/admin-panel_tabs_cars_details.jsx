@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Button, Collapse } from "react-bootstrap";
 import cityService from "../../services/city-service";
 import carService from "../../services/car-service";
+import maintenenceService from "../../services/maintenence-service";
 
 export default class CarDetails extends Component {
   constructor(props) {
@@ -18,15 +19,37 @@ export default class CarDetails extends Component {
       isFree: props.row.free,
 
       cityData: [],
+      carRepairs: [],
 
-
+      openRepairHistory:false,
       changed: true,
       distance: 0,
     };
   }
 
   componentDidMount() {
-    this.getCitiesList();
+    this.getCitiesList()
+    this.getRepairList()
+  }
+
+  getRepairList=()=>{
+    maintenenceService.getCarMaintenece(this.state.licensePlate).then(
+      (response) => {
+        this.setState({
+          carRepairs: response.data,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
   }
 
   getCitiesList = () => {
@@ -50,47 +73,55 @@ export default class CarDetails extends Component {
     );
   };
 
-
-  UpdateCar = () =>{
-    console.log(this.state.id, this.state.localization, this.state.inRepair,this.state.isFree)
-      carService.updateCar(this.state.id, this.state.localization, this.state.inRepair, this.state.isFree).then(
-        (error) => {
-          this.setState({
-            content:
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString(),
-          });
-        }
+  UpdateCar = () => {
+    console.log(
+      this.state.id,
+      this.state.localization,
+      this.state.inRepair,
+      this.state.isFree
+    );
+    carService
+      .updateCar(
+        this.state.id,
+        this.state.localization,
+        this.state.inRepair,
+        this.state.isFree
       )
-      this.props.clickBack()
-  }
+      .then((error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      });
+    this.props.clickBack();
+  };
 
   OnSelect = (event) => {
-    const { value} = event.target;
+    const { value } = event.target;
     this.setState({
       localization: value,
-      changed: false
+      changed: false,
     });
   };
 
   OnCheckbox = (event) => {
-    const { checked} = event.target;
+    const { checked } = event.target;
     this.setState({
       inRepair: checked,
-      changed: false
+      changed: false,
     });
   };
   OnCheckboxFree = (event) => {
-    const { checked} = event.target;
+    const { checked } = event.target;
     this.setState({
       isFree: checked,
-      changed: false
+      changed: false,
     });
   };
-
 
   render() {
     const {
@@ -103,7 +134,9 @@ export default class CarDetails extends Component {
       localization,
       inRepair,
       changed,
-      isFree
+      isFree,
+      openRepairHistory,
+      carRepairs
     } = this.state;
     return (
       <Card>
@@ -173,34 +206,74 @@ export default class CarDetails extends Component {
                 })}
               </select>
               <div className="form-check">
-                  <input
-                    onChange={this.OnCheckbox}
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={inRepair}
-                    name="inRepair"
-                  />
-                  <label className="form-check-label">W naprawie</label>
-                </div>
-                <div className="form-check">
-                  <input
-                    onChange={this.OnCheckboxFree}
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={isFree}
-                    name="isFree"
-                  />
-                  <label className="form-check-label">Dostępny</label>
-                </div>
+                <input
+                  onChange={this.OnCheckbox}
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={inRepair}
+                  name="inRepair"
+                />
+                <label className="form-check-label">W naprawie</label>
+              </div>
+              <div className="form-check">
+                <input
+                  onChange={this.OnCheckboxFree}
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={isFree}
+                  name="isFree"
+                />
+                <label className="form-check-label">Dostępny</label>
+              </div>
             </div>
+
+            <Button
+                onClick={() => {
+                  this.setState((prevState) => {
+                    return {
+                      openRepairHistory: !prevState.openRepairHistory,
+                    };
+                  });
+                }}
+                aria-expanded={openRepairHistory}
+                style={{ marginTop: 30 }}
+              >
+                Pokaż wszystkie naprawy tego auta
+              </Button>
+              <br></br>
+              <Collapse in={openRepairHistory}>
+                <ul className="list-group">
+                  {carRepairs.map((repair) => {
+                    return (
+                      <il className="list-group-item" key={repair.id}>
+                        <b>ID:</b> {repair.id} <b>Auto:</b> {repair.carId}
+                        <br></br>
+                        <b>Status:</b> {repair.status}
+                        <br></br>
+                        <b>Opis:</b> {repair.description}
+                        <br></br>
+                        <b>Start:</b> {new Date(repair.startTime).toUTCString()}
+                        <br></br>
+                        {repair.status === "DONE" && (
+                          <>
+                            <b>Koniec:</b>{" "}
+                            {new Date(repair.doneTime).toUTCString()}
+                          </>
+                        )}
+                      </il>
+                    );
+                  })}
+                </ul>
+              </Collapse>
+
             <button
-            style={{ marginTop: 30 }}
-            className="btn btn-primary btn-lg"
-            onClick={this.UpdateCar}
-            disabled={changed}
-          >
-            Zapisz zmiany
-          </button>
+              style={{ marginTop: 30 }}
+              className="btn btn-primary btn-lg"
+              onClick={this.UpdateCar}
+              disabled={changed}
+            >
+              Zapisz zmiany
+            </button>
           </form>
           <button
             style={{ marginTop: 30 }}

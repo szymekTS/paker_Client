@@ -34,7 +34,7 @@ class CarService {
   );
   }
   updateCar(id,localization, isRepair, isFree) {
-    return axios.post(API_URL + "updejt",
+    return axios.post(API_URL + "update_car",
     {
         id: id,
         localization: localization,
@@ -54,7 +54,43 @@ class CarService {
       },
     });
   }
-  
+  getCarLoc(localization) {
+    return axios.get(API_URL + "find_localization", {
+      headers: authHeader(),
+      params: {
+        localization: localization,
+      },
+    });
+  }
+
+  getBrokenCarLoc(localization) {
+    return axios.get(API_URL + "find_broken_loc", {
+      headers: authHeader(),
+      params: {
+        localization: localization,
+      },
+    });
+  }
+
+  setCarLoc(car,localization) {
+    return axios.get(API_URL + "set_loc", {
+      headers: authHeader(),
+      params: {
+        car: car,
+        localization: localization,
+      },
+    });
+  }
+
+  findByPlate(car) {
+    return axios.get(API_URL + "find_plate", {
+      headers: authHeader(),
+      params: {
+        plate: car,
+      },
+    });
+  }
+  find_plate
 }
 
 export default new CarService();

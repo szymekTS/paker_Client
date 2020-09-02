@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Tab, Tabs } from "react-bootstrap";
+import DriverOrders from "./driver-panel_tabs_orders";
+import RepairDriver from "./driver-panel_tabs_repair";
 
 
 export default class DriverPanelTab extends Component {
@@ -20,10 +22,10 @@ export default class DriverPanelTab extends Component {
         onSelect={(key) => this.setState({ key })}
       >
         <Tab eventKey="orders" title="Zamówienia">
-          orders
+          <DriverOrders />
         </Tab>
         <Tab eventKey="repairs" title="Zgłoś naprawę">
-          customers
+          <RepairDriver />
         </Tab>
       </Tabs>
     );

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Tab, Tabs } from "react-bootstrap";
+import PakerOrders from "./paker-panel_tabs_orders";
+import PakerRepairs from "./paker-panel_tabs_repair";
 
 export default class PakerPanelTab extends Component {
   constructor(props) {
@@ -19,10 +21,10 @@ export default class PakerPanelTab extends Component {
         onSelect={(key) => this.setState({ key })}
       >
         <Tab eventKey="paker" title="Zapakuj">
-          pack it
+          <PakerOrders />
         </Tab>
         <Tab eventKey="maintanence" title="Naprawy">
-          naprawy
+          <PakerRepairs />
         </Tab>
       </Tabs>
     );

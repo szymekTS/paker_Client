@@ -4,50 +4,51 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import * as ReactBootStrap from "react-bootstrap";
 import orderService from "../../services/order-service";
-import OrderDetails from "./mod-panel_tabs_orders_details";
+import authService from "../../services/auth.service";
+import DriverOrderDetails from "./driver-panel_tabs_orders_details";
 
-export default class Orders extends Component {
+export default class DriverOrders extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      current: authService.getCurrentUser(),
       columns: [
         {
           dataField: "car",
           text: "Auto",
           sort: true,
           filter: textFilter(),
+          style: { whitespace: "nowrap" },
         },
         {
           dataField: "customer",
           text: "Klient",
           sort: true,
           filter: textFilter(),
-        },
-        {
-          dataField: "driver",
-          text: "Kierowca",
-          sort: true,
-          filter: textFilter(),
+          style: { whitespace: "nowrap" },
         },
         {
           dataField: "lastStatus",
           text: "Status",
           sort: true,
           filter: textFilter(),
+          style: { whitespace: "nowrap" },
         },
         {
           dataField: "origin",
           text: "Z",
           sort: true,
           filter: textFilter(),
+          style: { whitespace: "nowrap" },
         },
         {
           dataField: "destiny",
           text: "Do",
           sort: true,
           filter: textFilter(),
-        }
+          style: { whitespace: "nowrap" },
+        },
       ],
       orderData: [],
       row: {},
@@ -66,11 +67,13 @@ export default class Orders extends Component {
       details: false,
       newCustomer: false,
     });
-    setTimeout(() => {  this.getOrderList() }, 1000);
+    setTimeout(() => {
+      this.getOrderList();
+    }, 1000);
   };
 
   getOrderList = () => {
-    orderService.getAllOrder().then(
+    orderService.getDriverOrders(this.state.current.id).then(
       (response) => {
         this.setState({
           orderData: response.data,
@@ -90,7 +93,6 @@ export default class Orders extends Component {
     );
   };
 
-
   render() {
     const { row, details, loaded, orderData, columns } = this.state;
     const rowEvents = {
@@ -104,7 +106,7 @@ export default class Orders extends Component {
     };
     return loaded ? (
       details ? (
-        <OrderDetails
+        <DriverOrderDetails
           row={row}
           details={details}
           clickBack={this.HandleBack}

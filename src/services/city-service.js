@@ -45,12 +45,21 @@ class CityService {
     {headers: authHeader()} 
   );
   }
-
+  
   getCityData(id) {
     return axios.get(API_URL + "find", {
       headers: authHeader(),
       params: {
         id: id,
+      },
+    });
+  }
+
+  getCityDataName(id) {
+    return axios.get(API_URL + "find_name", {
+      headers: authHeader(),
+      params: {
+        name: id,
       },
     });
   }

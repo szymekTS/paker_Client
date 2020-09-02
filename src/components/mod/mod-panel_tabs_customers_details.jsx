@@ -34,7 +34,7 @@ export default class CustomerDetails extends Component {
     return (
       <Card>
         <Card.Title>
-          Klient <strong>{name, surname}</strong>
+          Klient <strong>{name}, {surname}</strong>
         </Card.Title>
         <Card.Body>
           <div className="form-group">

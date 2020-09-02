@@ -3,77 +3,64 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import * as ReactBootStrap from "react-bootstrap";
-import orderService from "../../services/order-service";
-import OrderDetails from "./mod-panel_tabs_orders_details";
+import authService from "../../services/auth.service";
+import RepairDetails from "./paker-panel_tabs_repair_details";
+import maintenenceService from "../../services/maintenence-service";
 
-export default class Orders extends Component {
+export default class PakerRepairs extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      curr: authService.getCurrentUser(),
       columns: [
         {
-          dataField: "car",
+          dataField: "id",
+          text: "ID",
+          sort: true,
+          filter: textFilter(),
+        },
+        {
+          dataField: "carId",
           text: "Auto",
           sort: true,
           filter: textFilter(),
         },
         {
-          dataField: "customer",
-          text: "Klient",
+          dataField: "status",
+          text: "status",
           sort: true,
           filter: textFilter(),
         },
-        {
-          dataField: "driver",
-          text: "Kierowca",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "lastStatus",
-          text: "Status",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "origin",
-          text: "Z",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "destiny",
-          text: "Do",
-          sort: true,
-          filter: textFilter(),
-        }
       ],
-      orderData: [],
+      maitanenceData: [],
       row: {},
       id: "",
+      localization: "",
       loaded: false,
       details: false,
-      newOrder: false,
+      newCar: false,
     };
   }
-
   componentDidMount() {
-    this.getOrderList();
+    this.getMaintenenceList()
   }
   HandleBack = () => {
     this.setState({
       details: false,
-      newCustomer: false,
+      newCar: false,
     });
-    setTimeout(() => {  this.getOrderList() }, 1000);
+    setTimeout(() => {
+      this.getMaintenenceList();
+    }, 1000);
   };
 
-  getOrderList = () => {
-    orderService.getAllOrder().then(
+  getMaintenenceList = () => {
+    this.setState({ loading: false });
+    maintenenceService.getAllMaintenece().then(
       (response) => {
         this.setState({
-          orderData: response.data,
+          maitanenceData: response.data,
           loaded: true,
         });
       },
@@ -90,9 +77,8 @@ export default class Orders extends Component {
     );
   };
 
-
   render() {
-    const { row, details, loaded, orderData, columns } = this.state;
+    const { row, details, loaded, maitanenceData, columns } = this.state;
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
         this.setState({
@@ -104,23 +90,24 @@ export default class Orders extends Component {
     };
     return loaded ? (
       details ? (
-        <OrderDetails
+        <RepairDetails
           row={row}
           details={details}
           clickBack={this.HandleBack}
-          deleteOne={this.DeleteUser}
         />
       ) : (
-        <BootstrapTable
-          keyField="id"
-          striped
-          hover
-          filter={filterFactory()}
-          data={orderData}
-          columns={columns}
-          rowEvents={rowEvents}
-          pagination={paginationFactory()}
-        />
+        <>
+          <BootstrapTable
+            keyField="id"
+            striped
+            hover
+            filter={filterFactory()}
+            data={maitanenceData}
+            columns={columns}
+            rowEvents={rowEvents}
+            pagination={paginationFactory()}
+          />
+        </>
       )
     ) : (
       <div className="d-flex justify-content-center">

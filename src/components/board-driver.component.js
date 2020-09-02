@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-
-import UserService from "../services/user.service";
 import DriverPanelTab from "./driver/driver-panel_tabs";
 
 export default class BoardDriver extends Component {

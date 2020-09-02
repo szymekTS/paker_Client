@@ -49,6 +49,7 @@ export default class Customers extends Component {
       details: false,
       newCustomer: false,
     });
+    setTimeout(() => {  this.getCustomerList() }, 1000);
   };
 
   DeleteUser = () => {
