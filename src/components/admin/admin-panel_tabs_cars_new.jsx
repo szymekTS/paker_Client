@@ -15,11 +15,23 @@ export default class CarNew extends Component {
       licensePlate: "",
       localization: "",
       carType: "",
+      canSave: false,
     };
   }
 
   componentDidMount(){
     this.getCitiesList()
+  }
+
+  componentDidUpdate(){
+    if(!this.state.canSave){
+      if(this.state.brand!=="" && this.state.model!=="" &&this.state.licensePlate!=="" &&this.state.localization!=="" &&this.state.carType!=="" ){
+        this.setState({
+          canSave:true,
+        }
+        )
+      }
+    }
   }
 
   getCitiesList = () => {
@@ -97,7 +109,6 @@ export default class CarNew extends Component {
                 className="form-control"
                 name="model"
                 onChange={this.OnChangeHandler}
-                maxLength="6"
               ></input>
             </div>
             <div className="form-group">
@@ -106,7 +117,7 @@ export default class CarNew extends Component {
                 className="form-control"
                 name="licensePlate"
                 onChange={this.OnChangeHandler}
-                maxLength="6"
+                maxLength="8"
               ></input>
             </div>
             <div className="form-group">
@@ -154,8 +165,9 @@ export default class CarNew extends Component {
               style={{ marginTop: 30 }}
               onClick={this.AddNewCar}
               className="btn btn-primary btn-lg"
+              disabled={!this.state.canSave}
             >
-              Zapisz miasto
+              Zapisz auto
             </button>
           </form>
           <button

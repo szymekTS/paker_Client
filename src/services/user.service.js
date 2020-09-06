@@ -19,6 +19,15 @@ class UserService {
     });
   }
 
+  resetPassword(id){
+    return axios.get(API_URL + "reset", {
+      headers: authHeader(),
+      params: {
+        id: id,
+      },
+    });
+  }
+
   getAllUsers() {
     return axios.get(API_URL + "find_all", this.state.option);
   }

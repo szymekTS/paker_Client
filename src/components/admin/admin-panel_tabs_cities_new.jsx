@@ -11,6 +11,7 @@ export default class CityNew extends Component {
       province: "",
       zipCode: "",
       message: "",
+      canSave: false,
     };
   }
 
@@ -28,6 +29,16 @@ export default class CityNew extends Component {
     }
   };
 
+  componentDidUpdate(){
+    if(!this.state.canSave){
+      if(this.state.name!=="" && this.state.province!=="" &&this.state.zipCode!=="" ){
+        this.setState({
+          canSave:true,
+        }
+        )
+      }
+    }
+  }
   AddNewCity=(event)=>{
     event.preventDefault()
     cityService.addNewCity(this.state.name, this.state.province, this.state.zipCode).then(
@@ -69,7 +80,7 @@ export default class CityNew extends Component {
                 name="province"
                 onChange={this.OnChangeHandler}
               >
-                <option key="0" value="PROV_DOLNOSLASKIE">--Wybierz województwo--</option>
+                <option key="0" value="">--Wybierz województwo--</option>
                 <option key="1" value="PROV_DOLNOSLASKIE">dolnośląskie</option>
                 <option key="2" value="PROV_KUJAWSKOPOMORSKIE">kujawsko-pomorskie</option>
                 <option key="3" value="PROV_LUBELSKIE">lubelskie</option>
@@ -101,6 +112,7 @@ export default class CityNew extends Component {
               style={{ marginTop: 30 }}
               onClick={this.AddNewCity}
               className="btn btn-primary btn-lg"
+              disabled={!this.state.canSave}
             >
               Zapisz miasto
             </button>

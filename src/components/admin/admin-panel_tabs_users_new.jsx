@@ -70,11 +70,22 @@ export default class UserNew extends Component {
       role_driver: false,
       role_paker: false,
 
-
+      canSave:false,
 
       successful: false,
       message: "",
     };
+  }
+
+  componentDidUpdate(){
+    if(!this.state.canSave){
+      if(this.state.id!=="" && this.state.userName!=="" &&this.state.name!==""&&this.state.surname!==""&&this.state.number!==""&&this.state.email!==""&&this.state.password!==""&&this.state.localization!==""&&this.state.role_admin||this.state.role_driver||this.state.role_moderator||this.state.role_paker){
+        this.setState({
+          canSave:true,
+        }
+        )
+      }
+    }
   }
 
   componentDidMount(){
@@ -308,7 +319,7 @@ export default class UserNew extends Component {
                   <label className="form-check-label">Kierowca</label>
                 </div>
 
-                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Dodaj użytkownika</button>
+                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg" disabled={!this.state.canSave}>Dodaj użytkownika</button>
                 
               </div>
             )}

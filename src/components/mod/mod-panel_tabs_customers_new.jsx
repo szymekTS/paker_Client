@@ -36,9 +36,22 @@ export default class UserNew extends Component {
       surname: "",
       email: "",
 
+      canSave: false,
+     
       successful: false,
       message: "",
     };
+  }
+
+  componentDidUpdate(){
+    if(!this.state.canSave){
+      if(this.state.name!=="" && this.state.surname!=="" &&this.state.email!=="" ){
+        this.setState({
+          canSave:true,
+        }
+        )
+      }
+    }
   }
 
   onChangeEmail = (e) => {
@@ -143,7 +156,7 @@ export default class UserNew extends Component {
                     onChange={this.OnChangeHandler}
                   />
                 </div>
-                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg">Dodaj klienta</button>
+                  <button style={{marginTop: 30}} className="btn btn-primary btn-lg" disabled={!this.state.canSave}>Dodaj klienta</button>
                 
               </div>
             )}

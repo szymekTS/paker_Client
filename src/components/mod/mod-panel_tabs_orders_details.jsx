@@ -31,7 +31,19 @@ export default class OrderDetails extends Component {
       distance: 0,
       openStatuses: false,
       openRoute: false,
+      canSave: false,
     };
+  }
+
+  componentDidUpdate(){
+    if(!this.state.canSave){
+      if(this.state.status!=="" && this.state.comments ){
+        this.setState({
+          canSave:true,
+        }
+        )
+      }
+    }
   }
 
   componentDidMount() {
@@ -56,6 +68,8 @@ export default class OrderDetails extends Component {
       }
     );
   }
+
+  
   GetRoute = () => {
     orderService.getRoute(this.state.id).then(
       (response) => {
@@ -316,7 +330,7 @@ export default class OrderDetails extends Component {
                     value={this.state.status}
                     className="form-control"
                   >
-                    <option>---</option>
+                    <option value="">---</option>
                     <option value="STATUS_PACKING">Pakowanie</option>
                     <option value="STATUS_TRANSPORTING">Transport</option>
                     <option value="STATUS_DELIVERED">Dostarczono</option>
@@ -332,6 +346,7 @@ export default class OrderDetails extends Component {
                 <button
                   className="btn btn-primary btn-lg"
                   onClick={this.AddStatus}
+                  disabled={!this.state.canSave}
                 >
                   Zapisz status
                 </button>

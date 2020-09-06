@@ -45,7 +45,6 @@ export default class UsersDetail extends Component {
   };
 
   getCityName = () => {
-    console.log("get city")
     this.setState({ loading: false });
     cityService.getCityData(this.state.row.localization).then(
       (response) => {
@@ -91,6 +90,26 @@ export default class UsersDetail extends Component {
     this.props.clickBack()
   }
 
+  ResetPassword = () =>{
+    userService.resetPassword(this.state.id).then(
+      (response) => {
+        this.setState({
+          message: response.data.message,
+        });
+      },
+      (error) => {
+        this.setState({
+          content:
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString(),
+        });
+      }
+    );
+  }
+
   GenerateRoleArray = ()=>{
       var array = []
       this.state.role_paker && array.push("ROLE_PAKER")
@@ -103,13 +122,14 @@ export default class UsersDetail extends Component {
   OnChangeHandler = (event) => {
     const { name, value, type, checked } = event.target;
     type === "checkbox"
-      ? this.setState({ [name]: checked })
-      : this.setState({ [name]: value });
+      ? this.setState({ [name]: checked,changed:true })
+      : this.setState({ [name]: value ,
+      changed:true});
   };
   OnNumberHandler = (event) => {
     const re = /^[0-9\b]+$/;
     if (event.target.value === "" || re.test(event.target.value)) {
-      this.setState({ number: event.target.value });
+      this.setState({ number: event.target.value ,changed:true});
     }
   };
 
@@ -122,6 +142,7 @@ export default class UsersDetail extends Component {
       number,
       email,
       localization,
+      changed
     } = this.state;
     return (
       <>
@@ -248,8 +269,16 @@ export default class UsersDetail extends Component {
                   <label className="form-check-label">Kierowca</label>
                 </div>
               </div>
-              <button className="btn btn-primary btn-lg" onClick={this.UpdateUser} >Zapisz zmiany</button>
+              <button className="btn btn-primary btn-lg" onClick={this.UpdateUser} disabled={!changed}>Zapisz zmiany</button>
             </form>
+            <button
+              style={{ marginTop: 30 }}
+              className="btn btn-warning btn-lg"
+              onClick={this.ResetPassword}
+            >
+              Reset hasła
+            </button>
+            <br />
             <button
               style={{ marginTop: 30 }}
               className="btn btn-danger btn-lg"
