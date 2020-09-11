@@ -274,7 +274,7 @@ export default class OrderDetails extends Component {
                       <br></br>
                       Opis: {status.comments}
                       <br></br>
-                      Data: {new Date(status.date).toUTCString()}
+                      Data: {new Date(status.date).toLocaleDateString()} {new Date(status.date).toLocaleTimeString()}
                     </li>
                   );
                 })}

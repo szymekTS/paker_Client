@@ -116,9 +116,9 @@ export default class RepairDetails extends Component {
                     <b>ID:</b> {repair.id} <b>Auto:</b> {repair.carId}<br></br> 
                     <b>Status:</b> {repair.status}<br></br>
                     <b>Opis:</b> {repair.description}<br></br>
-                    <b>Start:</b> {new Date(repair.startTime).toUTCString()}<br></br>
+                    <b>Start:</b> {new Date(repair.startTime).toLocaleDateString()} {new Date(repair.startTime).toLocaleTimeString()}<br></br>
                     
-                    {repair.status === "DONE"&&(<><b>Koniec:</b> {new Date(repair.doneTime).toUTCString()}</>)
+                    {repair.status === "DONE"&&(<><b>Koniec:</b> {new Date(repair.startTime).toLocaleDateString()} {new Date(repair.startTime).toLocaleTimeString()}</>)
                     } 
                 </il>)
               })}
