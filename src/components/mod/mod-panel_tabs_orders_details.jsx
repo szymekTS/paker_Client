@@ -299,7 +299,7 @@ export default class OrderDetails extends Component {
               <ul className="list-group">
                 <li className="list-group-item" key={destiny}>
                   <b>
-                    Trasa {origin} - {destiny}, odległość: {routeData.distance}{" "}
+                    Trasa {origin} - {destiny}, odległość: {Number(routeData.distance).toFixed(2)}{" "}
                     km
                   </b>
                 </li>
