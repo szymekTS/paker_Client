@@ -196,7 +196,7 @@ export default class CarDetails extends Component {
                 onChange={this.OnSelect}
                 className="form-control"
               >
-                <option>----</option>
+                <option value="nic">----</option>
                 {cityData.map((city) => {
                   return (
                     <option key={city.id} value={city.id}>

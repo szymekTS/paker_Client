@@ -14,7 +14,8 @@ export default class CityDetails extends Component {
       neighbours: [],
       names: [],
       selected:"",
-      distance: 0
+      distance: 0,
+      edited: false
     };
   }
 
@@ -74,7 +75,8 @@ export default class CityDetails extends Component {
   OnDistance = (event) =>{
     const{value} = event.target
     this.setState({
-      distance: value
+      distance: value,
+      edited: true
     })
   }
 
@@ -155,7 +157,7 @@ export default class CityDetails extends Component {
                 <input className="form-control" type="number" value={this.state.distance} onChange={this.OnDistance}></input>
 
             </div>
-            <button className="btn btn-primary btn-lg" onClick={this.AddNeighbours} >Zapisz sąsiada</button>
+            <button className="btn btn-primary btn-lg" disabled={!this.state.edited} onClick={this.AddNeighbours} >Zapisz sąsiada</button>
           </form>
           <button
               style={{ marginTop: 30 }}
